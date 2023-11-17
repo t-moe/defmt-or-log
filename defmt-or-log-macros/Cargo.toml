@@ -1,0 +1,20 @@
+[package]
+name = "defmt-or-log-macros"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["Timo Lang"]
+description = "Proc-Macros to derive either defmt or log, depending on the configuration"
+keywords = ["defmt", "no_std", "logging", "embedded"]
+repository = "https://github.com/t-moe/defmt-or-log"
+categories = ["embedded", "no-std"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+quote = "1.0.33"
+syn = "2.0.39"
+proc-macro2 = "1.0"
+
+[lib]
+proc-macro = true

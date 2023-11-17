@@ -1,0 +1,24 @@
+[package]
+name = "defmt-or-log"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["Timo Lang"]
+description = "Logging macros that forward to either defmt or log"
+keywords = ["defmt", "no_std", "logging", "embedded"]
+readme = "README.md"
+repository = "https://github.com/t-moe/defmt-or-log"
+categories = ["embedded", "no-std"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+defmt = { version = "0.3.5", optional = true }
+log = { version = "0.4.20", optional = true }
+
+[dev-dependencies]
+defmt-or-log-macros = { path = "../defmt-or-log-macros" }
+
+[features]
+log = ["dep:log"]
+defmt = ["dep:defmt"]
