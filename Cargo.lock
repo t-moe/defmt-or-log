@@ -33,7 +33,7 @@ dependencies = [
 
 [[package]]
 name = "defmt-or-log"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "defmt",
  "defmt-or-log-macros",
@@ -42,7 +42,7 @@ dependencies = [
 
 [[package]]
 name = "defmt-or-log-macros"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "proc-macro2",
  "quote",

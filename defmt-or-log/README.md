@@ -8,8 +8,8 @@ Furthermore, the `defmt-or-log` crate provides:
 
 See [examples/derive.rs](./examples/derive.rs).
 
-
-You may either enable the `log` or the `defmt` feature but not both. Currently it is allowed to enable none of these features, but it might make sense to disallow this (in your library).
+You may either enable the `log` or the `defmt` feature but not both.  
+The feature `at_least_one` (enabled per default) generates a compiler error if neither `log` nor `defmt` are enabled.   
 
 This repository, also provides the `defmt-or-log-macros` crate, which Proc Macros to conditonally derive `core::fmt::Debug` or `defmt::Format`, depending on the enabled features.
 

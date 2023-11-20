@@ -2,6 +2,9 @@
 #[cfg(all(feature = "defmt", feature = "log"))]
 compile_error!("You may not enable both `defmt` and `log` features.");
 
+#[cfg(all(feature = "at_least_one", not(feature = "defmt"), not(feature = "log")))]
+compile_error!("You have to enable either the `defmt` or the `log` feature (because feature at_least_one is set).");
+
 #[macro_export]
 macro_rules! assert {
     ($($x:tt)*) => {
@@ -192,7 +195,7 @@ macro_rules! unwrap {
 #[macro_export]
 macro_rules! unwrap {
     ($arg:expr) => {
-        match $crate::Try::into_result($arg) {
+        match defmt_or_log::macros::Try::into_result($arg) {
             ::core::result::Result::Ok(t) => t,
             ::core::result::Result::Err(e) => {
                 ::core::panic!("unwrap of `{}` failed: {:?}", ::core::stringify!($arg), e);
@@ -200,7 +203,7 @@ macro_rules! unwrap {
         }
     };
     ($arg:expr, $($msg:expr),+ $(,)? ) => {
-        match $crate::Try::into_result($arg) {
+        match defmt_or_log::macros::Try::into_result($arg) {
             ::core::result::Result::Ok(t) => t,
             ::core::result::Result::Err(e) => {
                 ::core::panic!("unwrap of `{}` failed: {}: {:?}", ::core::stringify!($arg), ::core::format_args!($($msg,)*), e);
