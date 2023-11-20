@@ -2,7 +2,9 @@
 
 In embedded projects you often want to log something either via `core::fmt::Debug` or `defmt::Format`, depending on the configuration. The crate `defmt-or-log` provides the usual logger macros and either forwards them to the `log` or `defmt` crate, depending on the enabled features.
 
-Furthermore, the `defmt-or-log` crate provides the `FormatOrDebug` trait, that uses `core::fmt::Debug` or `defmt::Format` as super-trait and provides matching blanket implementations. This is useful for specifying trait bounds.
+Furthermore, the `defmt-or-log` crate provides:
+* the `FormatOrDebug` trait, that uses `core::fmt::Debug` or `defmt::Format` as super-trait and provides matching blanket implementations. This is useful for specifying trait bounds.
+* the `Debug2Format` struct, which behaves similar to `defmt::Debug2Format`, but does nothing extra if using `log`.
 
 See [examples/derive.rs](./examples/derive.rs).
 
