@@ -1,6 +1,6 @@
 [package]
 name = "defmt-or-log"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["Timo Lang"]
@@ -15,15 +15,14 @@ categories = ["embedded", "no-std"]
 [dependencies]
 defmt = { version = "0.3.5", optional = true }
 log = { version = "0.4.20", optional = true }
-
-[dev-dependencies]
-defmt-or-log-macros = { path = "../defmt-or-log-macros" }
+defmt-or-log-macros = { version = "0.1.0", path = "../defmt-or-log-macros" }
 
 [features]
 # Choose at most one of the following two features
 log = ["dep:log"]
 defmt = ["dep:defmt"]
 
-at_least_one = [] # If enabled, at least one of the above features must be enabled
+# If enabled, at least one of the above features must be enabled
+at_least_one = []
 
 default = ["at_least_one"]

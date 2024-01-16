@@ -183,6 +183,16 @@ macro_rules! error {
     };
 }
 
+#[macro_export]
+macro_rules! intern {
+    ($s:literal) => {
+        #[cfg(not(feature = "defmt"))]
+        $s
+        #[cfg(feature = "defmt")]
+        ::defmt::intern!($s)
+    };
+}
+
 #[cfg(feature = "defmt")]
 #[macro_export]
 macro_rules! unwrap {

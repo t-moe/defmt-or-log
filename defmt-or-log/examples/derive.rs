@@ -1,5 +1,4 @@
 use defmt_or_log::*; // Import the log macros and the FormatOrDebug trait
-use defmt_or_log_macros::*; // Optional: Import the derive macro
 
 #[derive_format_or_debug] // Shorthand for:
                           // #[cfg_attr(feature="defmt", derive(defmt::Format))]

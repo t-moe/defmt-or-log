@@ -5,13 +5,14 @@ In embedded projects you often want to log something either via `core::fmt::Debu
 Furthermore, the `defmt-or-log` crate provides:
 * the `FormatOrDebug` trait, that uses `core::fmt::Debug` or `defmt::Format` as super-trait and provides matching blanket implementations. This is useful for specifying trait bounds.
 * the `Debug2Format` struct, which behaves similar to `defmt::Debug2Format`, but does nothing extra if using `log`.
+* the `Display2Format` struct, which behaves similar to `defmt::Display2Format`, but does nothing extra if using `log`.
 
 See [examples/derive.rs](./examples/derive.rs).
 
 You may either enable the `log` or the `defmt` feature but not both.  
 The feature `at_least_one` (enabled per default) generates a compiler error if neither `log` nor `defmt` are enabled.   
 
-This repository, also provides the `defmt-or-log-macros` crate, which Proc Macros to conditonally derive `core::fmt::Debug` or `defmt::Format`, depending on the enabled features.
+This repository, also provides the `defmt-or-log-macros` crate, that contains Proc Macros to conditonally derive `core::fmt::Debug` or `defmt::Format`, depending on the enabled features.
 
 
 ## Supported macros (`defmt-or-log` crate):
@@ -32,6 +33,7 @@ This repository, also provides the `defmt-or-log-macros` crate, which Proc Macro
 * unreachable
 * panic
 * unwrap
+* intern
 
 ## License
 
