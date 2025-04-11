@@ -222,6 +222,34 @@ macro_rules! unwrap {
     }
 }
 
+#[cfg(feature = "defmt")]
+#[macro_export]
+macro_rules! expect {
+    ($($x:tt)*) => {
+        ::defmt::expect!($($x)*)
+    };
+}
+
+#[cfg(not(feature = "defmt"))]
+#[macro_export]
+macro_rules! expect {
+    ($x:expr, $msg:expr) => {
+        $x.expect($msg)
+    };
+}
+
+#[macro_export]
+macro_rules! unimplemented {
+    ($($x:tt)*) => {
+        {
+            #[cfg(not(feature = "defmt"))]
+            ::core::unimplemented!($($x)*);
+            #[cfg(feature = "defmt")]
+            ::defmt::unimplemented!($($x)*);
+        }
+    };
+}
+
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct NoneError;
 
