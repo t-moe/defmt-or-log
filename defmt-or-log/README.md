@@ -6,6 +6,8 @@ Furthermore, the `defmt-or-log` crate provides:
 * the `FormatOrDebug` trait, that uses `core::fmt::Debug` or `defmt::Format` as super-trait and provides matching blanket implementations. This is useful for specifying trait bounds.
 * the `Debug2Format` struct, which behaves similar to `defmt::Debug2Format`, but does nothing extra if using `log`.
 * the `Display2Format` struct, which behaves similar to `defmt::Display2Format`, but does nothing extra if using `log`.
+* the `Hex` and `Cbor` structs, which allow formatting `&[u8]`-slices with a format specifier that works for `log` and `defmt`:  
+  `info!("Found bytes {}", Hex(&data))` instead of `{:02x}` (defmt) resp `{:02x?}` (log). 
 
 See [examples/derive.rs](./examples/derive.rs).
 
@@ -34,13 +36,15 @@ This repository, also provides the `defmt-or-log-macros` crate, that contains Pr
 * panic
 * unwrap
 * intern
+* expect
+* unimplemented
 
 ## License
 
 Licensed under either of:
 
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](../LICENSE-APACHE.txt) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](../LICENSE-MIT.txt) or http://opensource.org/licenses/MIT)
 
 at your option.
 
