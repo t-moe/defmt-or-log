@@ -10,6 +10,9 @@ readme = "README.md"
 repository = "https://github.com/t-moe/defmt-or-log"
 categories = ["embedded", "no-std"]
 
+[package.metadata.docs.rs]
+no-default-features = true
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
