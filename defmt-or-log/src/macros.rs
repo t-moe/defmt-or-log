@@ -5,14 +5,78 @@ compile_error!("You may not enable both `defmt` and `log` features.");
 #[cfg(all(feature = "at_least_one", not(feature = "defmt"), not(feature = "log")))]
 compile_error!("You have to enable either the `defmt` or the `log` feature (because feature at_least_one is set).");
 
+#[cfg(feature = "defmt")]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! defmt_or_core {
+    ($macro:ident, $($x:tt)*) => {
+        $crate::__private::defmt::$macro!($($x)*);
+    };
+}
+
+#[cfg(not(feature = "defmt"))]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! defmt_or_core {
+    ($macro:ident, $($x:tt)*) => {
+        ::core::$macro!($($x)*);
+    };
+}
+
+#[cfg(feature = "defmt")]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! maybe_defmt {
+    ($macro:ident, $s:literal $(, $x:expr)* $(,)?) => {
+        $crate::__private::defmt::$macro!($s $(, $x)*);
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+#[cfg(not(feature = "defmt"))]
+macro_rules! maybe_defmt {
+    ($macro:ident, $s:literal $(, $x:expr)* $(,)?) => {
+        let _ = ($($x),*);
+    };
+}
+
+#[cfg(feature = "log")]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! maybe_log {
+    ($macro:ident, $s:literal $(, $x:expr)* $(,)?) => {
+        $crate::__private::log::$macro!($s $(, $x)*);
+    };
+}
+
+#[cfg(not(feature = "log"))]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! maybe_log {
+    ($macro:ident, $s:literal $(, $x:expr)* $(,)?) => {
+        let _ = ($($x),*);
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! defmt_or_log {
+    ($macro:ident, $s:literal $(, $x:expr)* $(,)?) => {
+        {
+            let _ = ($($x),*);
+            $crate::maybe_defmt!($macro, $s $(, $x)*);
+            $crate::maybe_log!($macro, $s $(, $x)*);
+        }
+    };
+}
+
+
 #[macro_export]
 macro_rules! assert {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::assert!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::assert!($($x)*);
+            $crate::defmt_or_core!(assert, $($x)*)
         }
     };
 }
@@ -21,10 +85,7 @@ macro_rules! assert {
 macro_rules! assert_eq {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::assert_eq!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::assert_eq!($($x)*);
+            $crate::defmt_or_core!(assert_eq, $($x)*)
         }
     };
 }
@@ -33,10 +94,7 @@ macro_rules! assert_eq {
 macro_rules! assert_ne {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::assert_ne!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::assert_ne!($($x)*);
+            $crate::defmt_or_core!(assert_ne, $($x)*)
         }
     };
 }
@@ -45,10 +103,7 @@ macro_rules! assert_ne {
 macro_rules! debug_assert {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::debug_assert!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::debug_assert!($($x)*);
+            $crate::defmt_or_core!(debug_assert, $($x)*)
         }
     };
 }
@@ -57,10 +112,7 @@ macro_rules! debug_assert {
 macro_rules! debug_assert_eq {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::debug_assert_eq!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::debug_assert_eq!($($x)*);
+            $crate::defmt_or_core!(debug_assert_eq, $($x)*)
         }
     };
 }
@@ -69,10 +121,7 @@ macro_rules! debug_assert_eq {
 macro_rules! debug_assert_ne {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::debug_assert_ne!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::debug_assert_ne!($($x)*);
+            $crate::defmt_or_core!(debug_assert_ne, $($x)*)
         }
     };
 }
@@ -81,10 +130,7 @@ macro_rules! debug_assert_ne {
 macro_rules! todo {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::todo!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::todo!($($x)*);
+            $crate::defmt_or_core!(todo, $($x)*)
         }
     };
 }
@@ -93,10 +139,7 @@ macro_rules! todo {
 macro_rules! unreachable {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::unreachable!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::unreachable!($($x)*);
+            $crate::defmt_or_core!(unreachable, $($x)*)
         }
     };
 }
@@ -105,10 +148,7 @@ macro_rules! unreachable {
 macro_rules! panic {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::panic!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::panic!($($x)*);
+            $crate::defmt_or_core!(panic, $($x)*)
         }
     };
 }
@@ -117,12 +157,7 @@ macro_rules! panic {
 macro_rules! trace {
     ($s:literal $(, $x:expr)* $(,)?) => {
         {
-            #[cfg(feature = "log")]
-            ::log::trace!($s $(, $x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::trace!($s $(, $x)*);
-            #[cfg(not(any(feature = "log", feature="defmt")))]
-            let _ = ($( & $x ),*);
+            $crate::defmt_or_log!(trace, $s $(, $x)*)
         }
     };
 }
@@ -131,12 +166,7 @@ macro_rules! trace {
 macro_rules! debug {
     ($s:literal $(, $x:expr)* $(,)?) => {
         {
-            #[cfg(feature = "log")]
-            ::log::debug!($s $(, $x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::debug!($s $(, $x)*);
-            #[cfg(not(any(feature = "log", feature="defmt")))]
-            let _ = ($( & $x ),*);
+            $crate::defmt_or_log!(debug, $s $(, $x)*)
         }
     };
 }
@@ -145,12 +175,7 @@ macro_rules! debug {
 macro_rules! info {
     ($s:literal $(, $x:expr)* $(,)?) => {
         {
-            #[cfg(feature = "log")]
-            ::log::info!($s $(, $x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::info!($s $(, $x)*);
-            #[cfg(not(any(feature = "log", feature="defmt")))]
-            let _ = ($( & $x ),*);
+            $crate::defmt_or_log!(info, $s $(, $x)*)
         }
     };
 }
@@ -159,12 +184,7 @@ macro_rules! info {
 macro_rules! warn {
     ($s:literal $(, $x:expr)* $(,)?) => {
         {
-            #[cfg(feature = "log")]
-            ::log::warn!($s $(, $x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::warn!($s $(, $x)*);
-            #[cfg(not(any(feature = "log", feature="defmt")))]
-            let _ = ($( & $x ),*);
+            $crate::defmt_or_log!(warn, $s $(,$x)*)
         }
     };
 }
@@ -173,23 +193,24 @@ macro_rules! warn {
 macro_rules! error {
     ($s:literal $(, $x:expr)* $(,)?) => {
         {
-            #[cfg(feature = "log")]
-            ::log::error!($s $(, $x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::error!($s $(, $x)*);
-            #[cfg(not(any(feature = "log", feature="defmt")))]
-            let _ = ($( & $x ),*);
+            $crate::defmt_or_log!(error, $s $(, $x)*)
         }
     };
 }
 
+#[cfg(not(feature = "defmt"))]
 #[macro_export]
 macro_rules! intern {
     ($s:literal) => {
-        #[cfg(not(feature = "defmt"))]
         $s
-        #[cfg(feature = "defmt")]
-        ::defmt::intern!($s)
+    };
+}
+
+#[cfg(feature = "defmt")]
+#[macro_export]
+macro_rules! intern {
+    ($s:literal) => {
+        $crate::__private::defmt::intern!($s)
     };
 }
 
@@ -197,7 +218,7 @@ macro_rules! intern {
 #[macro_export]
 macro_rules! unwrap {
     ($($x:tt)*) => {
-        ::defmt::unwrap!($($x)*)
+        $crate::__private::defmt::unwrap!($($x)*)
     };
 }
 
@@ -226,7 +247,7 @@ macro_rules! unwrap {
 #[macro_export]
 macro_rules! expect {
     ($($x:tt)*) => {
-        ::defmt::expect!($($x)*)
+        $crate::__private::defmt::expect!($($x)*)
     };
 }
 
@@ -242,10 +263,7 @@ macro_rules! expect {
 macro_rules! unimplemented {
     ($($x:tt)*) => {
         {
-            #[cfg(not(feature = "defmt"))]
-            ::core::unimplemented!($($x)*);
-            #[cfg(feature = "defmt")]
-            ::defmt::unimplemented!($($x)*);
+            $crate::defmt_or_core!(unimplemented, $($x)*)
         }
     };
 }
