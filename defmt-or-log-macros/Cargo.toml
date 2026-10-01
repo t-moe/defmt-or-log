@@ -13,7 +13,7 @@ categories = ["embedded", "no-std"]
 
 [dependencies]
 quote = "1.0.33"
-syn = "2.0.39"
+syn = "3"
 proc-macro2 = "1.0"
 
 [lib]
